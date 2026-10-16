@@ -1,0 +1,11 @@
+# Secrets: never publish these
+config.py
+
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# macOS and editor files
+.DS_Store
+.vscode/

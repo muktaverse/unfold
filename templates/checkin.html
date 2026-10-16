@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Check in · Unfold{% endblock %}
+
+{% block content %}
+<section class="card medium">
+  <h1>How are you feeling?</h1>
+  <p class="lead">Take a moment. There are no wrong answers.</p>
+
+  <form method="post">
+    <p class="field-title">Your mood right now</p>
+    <div class="scale">
+      {% for value, word in [(1, 'Very low'), (2, 'Low'), (3, 'Okay'), (4, 'Good'), (5, 'Great')] %}
+      <div>
+        <input type="radio" id="mood{{ value }}" name="mood_score" value="{{ value }}" required>
+        <label for="mood{{ value }}">
+          <span class="num">{{ value }}</span>
+          <span class="word">{{ word }}</span>
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p class="field-title">What's shaping it? <span class="muted">(optional)</span></p>
+    <div class="chips">
+      {% for tag in ['Stressed', 'Tired', 'Anxious', 'Calm', 'Grateful', 'Energetic', 'Lonely', 'Productive'] %}
+      <div>
+        <input type="checkbox" id="tag-{{ tag }}" name="tags" value="{{ tag }}">
+        <label for="tag-{{ tag }}">{{ tag }}</label>
+      </div>
+      {% endfor %}
+    </div>
+
+    <p class="field-title">A private note <span class="muted">(optional)</span></p>
+    <textarea name="note" placeholder="Anything you'd like to get off your mind?"></textarea>
+
+    <button class="btn" type="submit">Save check-in</button>
+  </form>
+</section>
+{% endblock %}

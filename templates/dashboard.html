@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Unfold{% endblock %}
+
+{% block content %}
+{% set words = {1: 'Very low', 2: 'Low', 3: 'Okay', 4: 'Good', 5: 'Great'} %}
+
+<section class="card">
+  <div class="dash-head">
+    <div>
+      <h1>Hello, {{ session.name }}</h1>
+      <p class="lead">Here is how your recent days have looked.</p>
+    </div>
+    <a class="btn inline" href="{{ url_for('checkin') }}">Check in now</a>
+  </div>
+
+  {% if pending_referral %}
+  <div class="banner calm">
+    <div>
+      <strong>Your counselor request has been sent.</strong>
+      <p>It's recorded and waiting for a counselor. Keep checking in, one day at a time.</p>
+    </div>
+  </div>
+  {% elif escalate %}
+  <div class="banner">
+    <div>
+      <strong>The last few days seem to have felt heavy.</strong>
+      <p>Talking to someone can help. You can request a counselor below, or call Tele-MANAS at 14416 any time (free, 24/7).</p>
+    </div>
+    <a class="btn inline" href="{{ url_for('referral') }}">Talk to a counselor</a>
+  </div>
+  {% endif %}
+
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-label">7-day average</span>
+      <span class="stat-value">{{ week_avg if week_avg else '–' }}</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Check-ins this week</span>
+      <span class="stat-value">{{ week_checkins }}</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Your week</h2>
+  {% if week_checkins %}
+    <div class="chart-wrap"><canvas id="moodChart"></canvas></div>
+  {% else %}
+    <p class="empty">Your chart will appear after your first check-in.</p>
+  {% endif %}
+
+  {% if tips %}
+  <h2 class="section-title spaced">Something that might help</h2>
+  <div class="tips">
+    {% for t in tips %}
+    <div class="tip">
+      <strong>{{ t[0] }}</strong>
+      <p>{{ t[1] }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <h2 class="section-title spaced">Recent check-ins</h2>
+  {% if entries %}
+    <ul class="entries">
+      {% for e in entries %}
+      <li>
+        <span class="badge">{{ e[0] }}</span>
+        <div>
+          <strong>{{ words[e[0]] }}</strong>
+          {% if e[1] %}<span class="muted"> · {{ e[1] }}</span>{% endif %}
+          <div class="muted small">{{ e[2].strftime('%d %b %Y, %I:%M %p') }}</div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="empty">No check-ins yet. Your first one takes under a minute.</p>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+{% if week_checkins %}
+<script src="{{ url_for('static', filename='chart.umd.min.js') }}"></script>
+<script>
+  const moodWords = {1: 'Very low', 2: 'Low', 3: 'Okay', 4: 'Good', 5: 'Great'};
+
+  new Chart(document.getElementById('moodChart'), {
+    type: 'line',
+    data: {
+      labels: {{ chart_labels | tojson }},
+      datasets: [{
+        data: {{ chart_values | tojson }},
+        borderColor: '#5f7f6b',
+        backgroundColor: 'rgba(95, 127, 107, 0.12)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 4,
+        pointBackgroundColor: '#5f7f6b',
+        borderWidth: 2,
+        spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => ' Average: ' + ctx.parsed.y + ' (' + moodWords[Math.round(ctx.parsed.y)] + ')'
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 1, max: 5,
+          ticks: { stepSize: 1, color: '#6f6b64', font: { family: 'Inter' } },
+          grid: { color: '#e4dfd6' },
+          border: { display: false }
+        },
+        x: {
+          ticks: { color: '#6f6b64', font: { family: 'Inter' } },
+          grid: { display: false },
+          border: { color: '#e4dfd6' }
+        }
+      }
+    }
+  });
+</script>
+{% endif %}
+{% endblock %}

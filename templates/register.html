@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Create account · Unfold{% endblock %}
+
+{% block content %}
+<section class="card narrow">
+  <h1>Create your account</h1>
+  <p class="lead">A quiet place to check in with yourself, a little each day.</p>
+
+  <form method="post">
+    <label for="full_name">Name</label>
+    <input id="full_name" name="full_name" type="text" required>
+
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" required>
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" minlength="6" required>
+    <p class="hint">At least 6 characters.</p>
+
+    <button class="btn" type="submit">Create account</button>
+  </form>
+
+  <p class="alt">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+</section>
+{% endblock %}

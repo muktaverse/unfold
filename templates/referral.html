@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Talk to a counselor · Unfold{% endblock %}
+
+{% block content %}
+<section class="card medium">
+  <h1>Talk to a counselor</h1>
+  <p class="lead">Choose someone you'd like to hear from. Asking for support is a strength.</p>
+
+  <form method="post">
+    <p class="field-title">Counselor</p>
+    <select name="counselor_id" required>
+      <option value="" disabled selected>Choose a counselor</option>
+      {% for c in counselors %}
+      <option value="{{ c[0] }}">{{ c[1] }}{% if c[2] %} · {{ c[2] }}{% endif %}</option>
+      {% endfor %}
+    </select>
+
+    <p class="field-title">Anything you'd like them to know? <span class="muted">(optional)</span></p>
+    <textarea name="reason" maxlength="300" placeholder="A few words are enough."></textarea>
+
+    <div class="consent">
+      <input type="checkbox" id="consent" name="consent" required>
+      <label for="consent">I agree to share my request and recent mood summary with this counselor.</label>
+    </div>
+
+    <button class="btn" type="submit">Send request</button>
+  </form>
+
+  <p class="alt">Need to talk right now? Call Tele-MANAS at <strong>14416</strong>, free and open 24/7.</p>
+</section>
+{% endblock %}
