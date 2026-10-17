@@ -13,11 +13,6 @@ A calm mental wellness companion. Users record a daily mood check-in, see their 
 - Referral saved only after explicit consent
 - Crisis helpline notice when a note contains distress keywords
 
-## Screenshots
-| Dashboard | Check-in |
-| --- | --- |
-| ![Dashboard] | ![Check-in] |
-
 ## Tech stack
 Python 3, Flask, Oracle Database (Docker), python-oracledb, Jinja templates, Chart.js
 
